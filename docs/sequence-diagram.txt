@@ -1,0 +1,25 @@
+@startuml
+actor Client
+participant "RegisterController" as Controller
+participant "RegisterService" as Service
+participant "ReportService" as Report
+
+Client -> Controller: createRegister(registerData)
+Controller -> Service: createRegister(registerData)
+Service -> Service: Validate registerData
+alt Valid Data
+    Service -> Service: Save registerData
+    Service -> Service: Update account balance
+    Service -> Service: Return saved Register
+    Service -> Controller: Return response with Register
+else Invalid Data
+    Service -> Controller: Return error response
+end
+Client -> Controller: generateReport(reportParams)
+Controller -> Report: generateReport(reportParams)
+Report -> Service: Fetch data for report
+Service -> Service: Generate report
+Service -> Report: Return generated report
+Report -> Controller: Return response with Report
+Controller -> Client: Return response with Report
+@enduml
